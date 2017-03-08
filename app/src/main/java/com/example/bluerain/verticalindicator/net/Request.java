@@ -14,14 +14,52 @@ public abstract class Request implements Comparable<Request> {
     private int mPrority;
     private boolean isValid = true;
 
+    private long mRequestTimeStamp;
+
+    private String mTag;
+
+    private boolean isNeedCache;
+
     private Listener mListener;
 
+
+    private CachePolicy mCachePolicy;
 
     public Request(String url, HashMap<String, String> mHeader, HashMap<String, String> mParams, int mPrority) {
         this.url = url;
         this.mHeader = mHeader;
         this.mParams = mParams;
         this.mPrority = mPrority;
+    }
+
+    public void setTag(String tag) {
+        mTag = tag;
+    }
+
+    public String getTag() {
+        return mTag;
+    }
+
+    public long getRequestTimeStamp() {
+        return mRequestTimeStamp;
+    }
+
+    public void setRequestTimeStamp(long mRequestTimeStamp) {
+        this.mRequestTimeStamp = mRequestTimeStamp;
+    }
+
+    public void setCachePolicy(CachePolicy policy) {
+        this.mCachePolicy = policy;
+    }
+
+
+    public void setNeedCache(boolean flag) {
+        isNeedCache = flag;
+    }
+
+    public boolean isNeedCache() {
+        if (null != mCachePolicy) return mCachePolicy.isNeedCache();
+        return isNeedCache;
     }
 
     public void setListner(Listener listner) {

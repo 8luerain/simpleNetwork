@@ -1,6 +1,5 @@
 package com.example.bluerain.verticalindicator;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,14 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.bluerain.verticalindicator.net.BitmapRequest;
+import com.example.bluerain.verticalindicator.net.CachePolicy;
 import com.example.bluerain.verticalindicator.net.Request;
 import com.example.bluerain.verticalindicator.net.RequestManger;
 import com.example.bluerain.verticalindicator.net.StringRequest;
 
 import java.util.HashMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTxv;
@@ -45,7 +42,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 for (int i = 0; i < 10; i++) {
-                    StringRequest r = new StringRequest(URL + PATH + "/" + (9 - i), header, null, 9 - i);
+                    final StringRequest r = new StringRequest(URL + PATH + "/" + (9 - i), header, null, 9 - i);
+                    if (i == 5) r.setCachePolicy(new CachePolicy() {
+                        @Override
+                        public boolean isNeedCache() {
+                            return r.getRequestTimeStamp() - System.currentTimeMillis() <= 60 * 1000;
+                        }
+                    });
                     RequestManger.getInstance().addRequest(r, new Request.Listener() {
                         @Override
                         public void onSuccess(Object response) {
